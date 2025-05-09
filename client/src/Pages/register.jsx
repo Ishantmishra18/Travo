@@ -1,0 +1,47 @@
+import React, { useState } from 'react';
+import api from '../utils/api';
+import { Link } from 'react-router-dom';
+
+const Register = () => {
+  const [form, setForm] = useState({ username: '', password: '' });
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await api.post('/auth/register', form);
+      alert("Registered successfully! Now login.");
+    } catch (err) {
+      setError(err.response?.data?.message || "Registration failed");
+    }
+  };
+
+  return (
+    <div className="h-screen flex justify-center items-center">
+      <form onSubmit={handleSubmit} className="w-80 p-6 bg-white rounded shadow space-y-4">
+        <h2 className="text-xl font-bold">Register</h2>
+        <input
+          type="text"
+          placeholder="Username"
+          className="w-full border p-2 rounded"
+          value={form.username}
+          onChange={(e) => setForm({ ...form, username: e.target.value })}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-full border p-2 rounded"
+          value={form.password}
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
+        />
+        {error && <p className="text-red-500 text-sm">{error}</p>}
+        <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded">
+          Register
+        </button>
+        <Link to='/login'>login here</Link>
+      </form>
+    </div>
+  );
+};
+
+export default Register;
