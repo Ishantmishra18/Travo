@@ -25,21 +25,33 @@ export const login = async (req, res) => {
   const { username, password } = req.body;
   try {
     const user = await User.findOne({ username });
-    if (!user) return res.status(400).json({ message: 'user not found' });
+    if (!user) return res.status(400).json({ message: 'User not found' });
 
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(400).json({ message: 'password incorrect' });
+    if (!match) return res.status(400).json({ message: 'Password incorrect' });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET , { expiresIn: '1d' });
+    const token = jwt.sign({ id: user._id }, jwtsec, { expiresIn: '1d' });
 
-    res.cookie('token', token, { httpOnly: true }).json({ message: 'Login successful' });
+
+    res.cookie('token', token, { httpOnly: true, sameSite: 'Strict' /* secure: true in production */ });
+
+    const { password: _, ...userData } = user.toObject(); // remove password
+
+    res.status(200).json({
+      message: 'Login successful',
+      user: userData,
+    });
+    
   } catch (err) {
+    console.error('Login error:', err);
     res.status(500).json({ message: 'Server error' });
   }
 };
 
+
 export const logout = (req, res) => {
-  res.clearCookie('token').json({ message: 'Logged out successfully' });
+  res.clearCookie('token'); 
+  res.status(200).json({ message: 'Logged out successfully' }); 
 };
 
 

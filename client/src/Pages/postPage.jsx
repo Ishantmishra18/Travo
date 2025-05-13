@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
 import PlaceBit from '../Components/placeBit';
+import { usePost } from '../Context/postContext';
+import { useParams } from 'react-router-dom';
+
 
 const RoomDetails = () => {
   const [showBit, setShowBit] = useState(false);
+
+  const { postID }= useParams();
+
+  const {posts}=usePost()
+  const post = posts.find(val=>val._id==postID)
 
   const room = {
     title: 'Cozy Studio Apartment',
@@ -23,9 +31,14 @@ const RoomDetails = () => {
     },
   };
 
+  if (!post) {
+  return <div className="text-center text-xl text-red-500 mt-10">Loading post details or post not found.</div>;
+}
+
+
   return (
     <div className="max-w-5xl mx-auto p-6 relative">
-      <h1 className="text-3xl font-bold">{room.title}</h1>
+      <h1 className="text-3xl font-bold">{post.title}</h1>
       <p className="text-gray-600">{room.location}</p>
 
       <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -59,7 +72,7 @@ const RoomDetails = () => {
               ✕
             </button>
 
-            <PlaceBit actualPrice={room.price} show={setShowBit} />
+            <PlaceBit post={post} show={setShowBit} />
           </div>
         </div>
       )}

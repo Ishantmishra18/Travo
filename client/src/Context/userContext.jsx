@@ -1,6 +1,7 @@
 // src/context/UserContext.js
-import { createContext, useContext, useEffect, useState } from 'react';
+import React ,{ createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
+import api from '../utils/api';
 
 
 const UserContext = createContext();
@@ -12,14 +13,16 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get('/api/auth/me', { withCredentials: true });
+        const res = await api.get('/auth/me');
         setUser(res.data);
       } catch (err) {
-        setUser(null); // user is not logged in or token expired
+        console.error("User fetch failed", err); // Add this line
+        setUser(null);
       }
     };
     fetchUser();
   }, []);
+  
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

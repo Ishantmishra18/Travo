@@ -7,16 +7,20 @@ import ChatPage from './Pages/chatPage';
 import Login from './Pages/login';
 import Register from './Pages/register';
 import HomePost from './Pages/postPage';
+import ProfilePage from './Pages/profilePage';
 import { UserProvider } from './Context/userContext';
+import { PostProvider } from './Context/postContext';
+import AddPost from './Pages/addPost';
+import ListingPage from './Pages/listingPage';
+import Bookmark from './Pages/bookmark';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: (
       <>
-        <Navbar />
-        <RoomSB />
-        <RoomPost />
+        <ListingPage />
+       
       </>
     ),
   },
@@ -33,7 +37,7 @@ const router = createBrowserRouter([
     element: <Register />,
   },
   {
-    path: '/post',
+    path: '/listing/:postID',
     element: (
       <>
         <Navbar />
@@ -41,12 +45,24 @@ const router = createBrowserRouter([
       </>
     ),
   },
+  {
+    path:'/profile',
+    element:<ProfilePage/>
+  },{
+    path:'/profile/list',
+    element:<AddPost/>
+  },{
+    path:'/profile/bookmark',
+    element:<Bookmark/>
+  }
 ]);
 
 const App = () => {
   return (
     <UserProvider>
+      <PostProvider>
       <RouterProvider router={router} />
+      </PostProvider>
     </UserProvider>
   );
 };

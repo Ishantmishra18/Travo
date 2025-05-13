@@ -1,16 +1,35 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+// src/components/NavBar.jsx
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useUser } from '../Context/userContext';
 
-const nav = () => {
+
+const NavBar = () => {
+  const { user } = useUser();
+
   return (
-    <div className='w-full h-[10vh] bg-gray-500 flex justify-end items-center gap-5 px-6'>
-        <Link to='/chat' className="chat px-5 py-3 bg-black text-white relative">Inbox
-        <div className=" absolute text-center h-7 rounded-full aspect-square -top-2 -left-5 bg-red-500">4</div>
-        </Link>
-        <Link to='/login' className='px-5 py-2 rounded-2xl text-white bg-black'>login</Link>
-        <Link to='/register' className='px-5 py-2 rounded-2xl border-2 border-black' >register</Link>
-    </div>
-  )
-}
+    <nav className="bg-white shadow-md h-[10vh] p-4 flex justify-between sticky top-0 z-40">
+      <Link to='/' className="text-xl font-bold">Travo</Link>
+      <div className="space-x-4">
+        {!user ? (
+          <>
+            <Link to="/login">Login</Link>
+            <Link to="/register">Register</Link>
+          </>
+        ) : (
+        
+          <div className="flex items-center gap-6">
+          <h1>welcome {user.username}</h1>
+          <Link to='/chat' className='px-4 py-2 rounded-xl bg-black relative text-white'>Inbox
+          <div className="pop bg-red-600 text-center h-6  rounded-full absolute -top-1 -left-3 aspect-square">3</div>
+          </Link>
+          <Link to="/profile">Profile</Link>
+          </div>
+          
+        )}
+      </div>
+    </nav>
+  );
+};
 
-export default nav
+export default NavBar;

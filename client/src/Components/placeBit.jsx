@@ -1,16 +1,28 @@
 import React, { useState } from 'react';
+import api from '../utils/api';
 
-const PlaceBit = ({ actualPrice = 500 , show}) => {
+const PlaceBit = ({ post , show}) => {
   const [message, setMessage] = useState('');
-  const [payment, setPayment] = useState(actualPrice);
+  const [payment, setPayment] = useState(post.price);
 
   const priceBlocks = [100, 200, 300].map(offset => ({
-    above: actualPrice + offset,
-    below: Math.max(actualPrice - offset, 0),
+    above: post.price + offset,
+    below: Math.max(post.price - offset, 0),
   }));
 
+  const handleBit =async ()=>{
+    try{
+      await api.post(`/listing/${post._id}/bid` , {message , payment})
+
+    }
+    catch(error){
+      console.log(error)
+    }
+      
+  }
+
   return (
-    <div className="h-[80vh] w-[60vw] rounded-2xl bg-white p-6 shadow-xl flex flex-col gap-6">
+    <div className="h-[60vh] w-[60vw] rounded-2xl bg-white p-6 shadow-xl flex flex-col gap-6">
       <h2 className="text-xl font-semibold text-gray-800">Place Your Bit</h2>
 
       {/* Message Input */}
@@ -28,7 +40,7 @@ const PlaceBit = ({ actualPrice = 500 , show}) => {
         <input
           type="range"
           min={0}
-          max={actualPrice * 2}
+          max={post.price * 2}
           value={payment}
           onChange={e => setPayment(Number(e.target.value))}
           className="w-full"
@@ -58,7 +70,10 @@ const PlaceBit = ({ actualPrice = 500 , show}) => {
       {/* Submit Button */}
       <button
         className="mt-auto bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
-        onClick={() =>  show(false)}
+       onClick={() => {
+          show(false);
+          handleBit();
+                      }}
       >
         Place Bit
       </button>

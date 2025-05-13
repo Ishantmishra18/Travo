@@ -17,27 +17,12 @@ const postSchema = new mongoose.Schema(
         required: true,
       }
     ],
-    pricePerNight: {
+    price: {
       type: Number,
       required: [true, "Price per night is required"],
     },
     location: {
-      address: {
-        type: String,
-        required: [true, "Address is required"],
-      },
-      city: {
-        type: String,
-        required: [true, "City is required"],
-      },
-      country: {
-        type: String,
-        required: [true, "Country is required"],
-      },
-      coordinates: {
-        lat: { type: Number },
-        lng: { type: Number },
-      },
+      type:String
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
@@ -52,7 +37,15 @@ const postSchema = new mongoose.Schema(
     isAvailable: {
       type: Boolean,
       default: true,
+    },
+    bids: [
+    {
+      bidder: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      amount: Number,
+      message: String,
+      timestamp: { type: Date, default: Date.now }
     }
+  ]
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt
 );

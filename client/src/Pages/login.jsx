@@ -2,16 +2,20 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { Link } from 'react-router-dom';
+import { useUser } from '../Context/userContext';
+import { useContext } from 'react';
 
 const Login = () => {
   const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { setUser } = useUser();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/auth/login', form);
+      const response = await api.post('/auth/login', form);
+      setUser(response.data.user)
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
