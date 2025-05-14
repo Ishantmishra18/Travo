@@ -11,12 +11,11 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: [true, "Post must have a description"],
     },
-    images: [
-      {
+    cover:{
         type: String, // URLs to uploaded images (can store Cloudinary URLs etc.)
         required: true,
       }
-    ],
+    ,
     price: {
       type: Number,
       required: [true, "Price per night is required"],

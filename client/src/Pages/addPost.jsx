@@ -9,7 +9,7 @@ const AddPost = () => {
     description: '',
     location: '',
     price: '',
-    image: ''
+    cover: ''
   });
 
   const [loading, setLoading] = useState(false);
@@ -43,7 +43,7 @@ const AddPost = () => {
         description: '',
         location: '',
         price: '',
-        image: ''
+        cover: ''
       });
       setTimeout(()=>{
     navigate('/profile')
@@ -106,8 +106,8 @@ const AddPost = () => {
 
         <input
           type="text"
-          name="image"
-          value={formData.image}
+          name="cover"
+          value={formData.cover}
           onChange={handleChange}
           placeholder="Image URL"
           className="w-full border p-2 rounded"

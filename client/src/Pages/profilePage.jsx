@@ -33,7 +33,7 @@ const ProfilePage = () => {
 
       <Link to='/' className='bg-black rounded-full px-5 py-2 text-white'>back to home</Link>
       <Link to='bookmark'>My bookmark</Link>
-      <Link to='mybids'>My Bids</Link>
+      <Link to='edit' className='px-3 py-2 bg-black text-white'>edit my profile</Link>
       </div>
     </div>
   );

@@ -102,7 +102,7 @@ const RoomDetails = () => {
             className="w-12 h-12 rounded-full"
           />
           <div>
-            <p className="font-medium">Hosted by {room.host.name}</p>
+            <p className="font-medium">Hosted by {post.owner.username}</p>
             <p className="text-sm text-gray-500">
               ⭐ {room.rating} ({room.reviews} reviews)
             </p>

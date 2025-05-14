@@ -31,7 +31,7 @@ const RoomPost = ({post}) => {
           </button>
         </div>
       <img
-        src="https://cdn.create.vista.com/api/media/medium/214626304/stock-photo-streaming?token="
+        src={post.images}
         alt="Room"
         className="w-full h-full object-cover"
       />
@@ -42,7 +42,9 @@ const RoomPost = ({post}) => {
       <div className="w-[60%] p-6 flex flex-col justify-between">
         <div>
           <h2 className="text-2xl font-semibold mb-2 text-gray-800">{post.title}</h2>
-          <p className="text-gray-500">Goa, India · 2 Guests · 1 Room</p>
+          <p className="text-gray-800">Goa, India · 2 Guests · 1 Room</p>
+          <p className='text-gray-400'>{post.description}</p>
+          <h1 className='text-gray-400'>by {post.owner.username}</h1>
         </div>
         <div className="flex justify-between items-end">
           <p className="text-lg text-black">₹{post.price} / night</p>

@@ -13,6 +13,8 @@ import { PostProvider } from './Context/postContext';
 import AddPost from './Pages/addPost';
 import ListingPage from './Pages/listingPage';
 import Bookmark from './Pages/bookmark';
+import Notify from './Pages/notify';
+import EditProfile from './Pages/editUser';
 
 const router = createBrowserRouter([
   {
@@ -26,7 +28,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/chat',
-    element: <ChatPage />,
+    element: <Notify />,
   },
   {
     path: '/login',
@@ -54,6 +56,9 @@ const router = createBrowserRouter([
   },{
     path:'/profile/bookmark',
     element:<Bookmark/>
+  },{
+    path:'/profile/edit',
+    element:<EditProfile/>
   }
 ]);
 

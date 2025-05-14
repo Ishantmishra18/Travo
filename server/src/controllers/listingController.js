@@ -7,7 +7,7 @@ import Post from '../models/postSchema.js';
 // @access  Private
 export const createListing = async (req, res) => {
   try {
-const { title, description, location, price, images } = req.body;
+const { title, description, location, price, cover } = req.body;
 
 const newPost = new Post({
   owner: req.user.id,
@@ -15,7 +15,7 @@ const newPost = new Post({
   description,
   location,
   price,
-  images,
+  cover,
 });
 
     const savedPost = await newPost.save();
@@ -72,7 +72,7 @@ export const deleteListing = async (req, res) => {
 // @access  Public
 export const getAllListings = async (req, res) => {
   try {
-    const listings = await Post.find().sort({ createdAt: -1 });
+    const listings = await Post.find().sort({ createdAt: -1 }).populate('owner');
     res.status(200).json(listings);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch listings', error });
