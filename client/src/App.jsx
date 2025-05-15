@@ -59,6 +59,9 @@ const router = createBrowserRouter([
   },{
     path:'/profile/edit',
     element:<EditProfile/>
+  },{
+    path:'/chat/:bidID',
+    element:<ChatPage/>
   }
 ]);
 

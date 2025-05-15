@@ -1,54 +1,42 @@
-import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import api from '../utils/api';
+import React, { useEffect, useState } from 'react';
+import { useUser } from '../Context/userContext';
 
+const ChatPage = () => {
+  const { bidID } = useParams();
+  const [chats, setChats] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { user } = useUser();
 
-const ChatBox = ({ username }) => {
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([]);
+  useEffect(() => {
+    const fetchChat = async () => {
+      try {
+        const response = await api.get(`/bid/${bidID}/messages`);
+        setChats(response.data);
+      } catch (error) {
+        console.log('Error while fetching chats:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchChat();
+  }, [bidID]);
 
+  if (loading || !user) return <>Loading...</>;
 
   return (
-    <div className="w-full max-w-xl bg-white shadow-md rounded p-4 h-[600px] flex flex-col">
-      <div className="flex-1 overflow-y-auto space-y-2 mb-4">
-        {messages.map((msg, idx) => (
-          <div
-            key={idx}
-            className={`flex ${
-              msg.username === username ? 'justify-end' : 'justify-start'
-            }`}
-          >
-            <div
-              className={`rounded px-4 py-2 ${
-                msg.username === username
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-black'
-              }`}
-            >
-              <span className="text-sm font-semibold block">
-                {msg.username}
-              </span>
-              <span>{msg.text}</span>
-            </div>
+    <div className="flex flex-col w-[80vw] h-auto space-y-2">
+      {chats.map((val, index) => (
+        <div key={index} className={`w-full flex ${user._id !== val.sender ? 'justify-start' : 'justify-end'}`}>
+          <div className={`max-w-[60%] px-4 py-2 rounded-2xl ${user._id !== val.sender ? 'bg-amber-300' : 'bg-amber-500'}`}>
+            <h1 className="font-semibold">{val.message}</h1>
+            {val.offerAmount && <p className="text-sm text-gray-700">₹{val.offerAmount}</p>}
           </div>
-        ))}
-      </div>
-      <div className="flex">
-        <input
-          type="text"
-          className="flex-1 border border-gray-300 rounded p-2 mr-2"
-          placeholder="Type a message..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-        />
-        <button
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-          onClick={sendMessage}
-        >
-          Send
-        </button>
-      </div>
+        </div>
+      ))}
     </div>
   );
 };
 
-export default ChatBox;
+export default ChatPage;

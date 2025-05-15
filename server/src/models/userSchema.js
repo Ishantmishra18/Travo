@@ -9,6 +9,7 @@ const UserSchema = new mongoose.Schema({
       ref: 'Post'
     }
   ],
+  cover:String,
   avatar: String,
 }, { timestamps: true });
 

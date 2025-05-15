@@ -26,7 +26,7 @@ const OfferPost = ({ post }) => {
           <p className="text-md"><span className="font-medium">Message:</span> {val.message}</p>
           <p className="text-md"><span className="font-medium">Amount:</span> ₹{val.amount}</p>
           {val.bidder && (
-            <p className="text-sm text-gray-600">Bidder ID: {val.bidder}</p>
+            <p className="text-sm text-gray-600">Bidded by : {val.bidder}</p>
             
           )}
           <div className="respond flex gap-3 mt-10">

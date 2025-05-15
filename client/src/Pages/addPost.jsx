@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import api from '../utils/api';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,7 +15,7 @@ const AddPost = () => {
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
-   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,7 +29,7 @@ const AddPost = () => {
     setErrorMsg('');
 
     try {
-      const token = localStorage.getItem('token'); // assuming you store JWT token
+      const token = localStorage.getItem('token');
       const response = await api.post('/listing/add', formData, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -45,10 +44,10 @@ const AddPost = () => {
         price: '',
         cover: ''
       });
-      setTimeout(()=>{
-    navigate('/profile')
-      },3000)
-      
+
+      setTimeout(() => {
+        navigate('/profile');
+      }, 3000);
     } catch (err) {
       setErrorMsg(err.response?.data?.message || 'Something went wrong');
     } finally {
@@ -57,70 +56,96 @@ const AddPost = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
-      <h2 className="text-2xl font-bold mb-4">Add New Post</h2>
+    <div className="h-screen w-screen flex bg-white text-gray-800 font-sans">
+      
+      {/* Form Section */}
+      <form onSubmit={handleSubmit} className="h-full w-[70vw] px-16 py-12 flex flex-col gap-6 overflow-y-auto">
+        <h2 className="text-3xl font-bold mb-2">Add New Listing</h2>
 
-      {successMsg && <p className="text-green-600 mb-3">{successMsg}</p>}
-      {errorMsg && <p className="text-red-600 mb-3">{errorMsg}</p>}
+        {successMsg && <p className="text-green-600">{successMsg}</p>}
+        {errorMsg && <p className="text-red-600">{errorMsg}</p>}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
-          placeholder="Title"
-          required
-          className="w-full border p-2 rounded"
-        />
+        <div className="flex flex-col gap-4">
+          <div>
+            <label className="block text-sm font-semibold mb-1">Title</label>
+            <input
+              type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              placeholder="Enter title"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
 
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          placeholder="Description"
-          required
-          rows={4}
-          className="w-full border p-2 rounded"
-        />
+          <div>
+            <label className="block text-sm font-semibold mb-1">Description</label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="Describe the place..."
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg resize-none h-24 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            ></textarea>
+          </div>
 
-        <input
-          type="text"
-          name="location"
-          value={formData.location}
-          onChange={handleChange}
-          placeholder="Location"
-          required
-          className="w-full border p-2 rounded"
-        />
+          <div>
+            <label className="block text-sm font-semibold mb-1">Location</label>
+            <input
+              type="text"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              placeholder="e.g., New Delhi, India"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
 
-        <input
-          type="number"
-          name="price"
-          value={formData.price}
-          onChange={handleChange}
-          placeholder="Price"
-          required
-          className="w-full border p-2 rounded"
-        />
+          <div>
+            <label className="block text-sm font-semibold mb-1">Price (in ₹)</label>
+            <input
+              type="number"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              placeholder="e.g., 5000"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
 
-        <input
-          type="text"
-          name="cover"
-          value={formData.cover}
-          onChange={handleChange}
-          placeholder="Image URL"
-          className="w-full border p-2 rounded"
-        />
+          <div>
+            <label className="block text-sm font-semibold mb-1">Cover Image URL</label>
+            <input
+              type="text"
+              name="cover"
+              value={formData.cover}
+              onChange={handleChange}
+              placeholder="https://example.com/image.jpg"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
-        >
-          {loading ? 'Posting...' : 'Add Post'}
-        </button>
+          <button
+            type="submit"
+            className={`mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold transition duration-300 hover:bg-blue-700 ${
+              loading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+            disabled={loading}
+          >
+            {loading ? 'Creating...' : 'Create Listing'}
+          </button>
+        </div>
       </form>
+
+      {/* Image Upload / Preview Section */}
+      <div className="h-full w-[30vw] bg-gray-50 flex flex-col items-center justify-center gap-5 p-6">
+        <div className="cover h-[20vh] aspect-video bg-cover bg-center rounded-2xl border border-gray-300"
+          style={{ backgroundImage: `url(${formData.cover || 'https://via.placeholder.com/300x200'})` }}>
+        </div>
+        <div className="text-sm text-gray-600 text-center">
+          Preview of cover image. Paste a valid image URL in the field.
+        </div>
+      </div>
     </div>
   );
 };

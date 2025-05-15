@@ -1,6 +1,7 @@
 // controllers/listingController.js
 
 import Post from '../models/postSchema.js';
+import User from '../models/userSchema.js';
 
 // @desc    Create a new listing
 // @route   POST /api/listings
@@ -125,11 +126,16 @@ export const placeBid = async (req, res) => {
       return res.status(404).json({ error: "Post not found" });
     }
 
+    const bidder = await User.findById(req.user.id);
+    if (!bidder) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
     // Push the bid into the bid array
     post.bids.push({
       message,
       amount: payment,
-      bidder: req.user.id,
+      bidder: bidder.username,
     });
 
     // Save the updated post

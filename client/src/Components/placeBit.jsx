@@ -12,8 +12,10 @@ const PlaceBit = ({ post , show}) => {
 
   const handleBit =async ()=>{
     try{
-      await api.post(`/listing/${post._id}/bid` , {message , payment})
-
+      await api.post(`/bid/post/${post._id}`, {
+        offerAmount: payment,
+        message
+      });
     }
     catch(error){
       console.log(error)

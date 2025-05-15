@@ -39,7 +39,7 @@ const postSchema = new mongoose.Schema(
     },
     bids: [
     {
-      bidder: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      bidder: { type:String , require:true },
       amount: Number,
       message: String,
       timestamp: { type: Date, default: Date.now }

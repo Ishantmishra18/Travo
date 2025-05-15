@@ -23,6 +23,7 @@ export const removeBookmark = async (req, res) => {
   res.status(200).json({ message: 'Bookmark removed' });
 };
 
+
 export const getBookmarks = async (req, res) => {
   const user = await User.findById(req.user.id).populate('bookmarks');
   res.status(200).json(user.bookmarks);
