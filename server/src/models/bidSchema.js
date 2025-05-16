@@ -19,7 +19,7 @@ const BidSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["open", "accepted", "rejected", "closed"],
+      enum: ["open", "accepted", "rejected", "counterOffer", "closed"],
       default: "open",
     },
 

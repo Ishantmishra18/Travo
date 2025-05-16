@@ -136,6 +136,32 @@ export const getBidsOnMyPosts = asyncHandler(async (req, res) => {
 // @route GET /api/bid/:bidId/messages
 export const getBidMessages = asyncHandler(async (req, res) => {
   const messages = await BidMessage.find({ bidId: req.params.bidId }).sort({ createdAt: 1 });
+ const bid = await Bid.findById(req.params.bidId)
+    .populate({
+      path: 'postId',
+      select: 'title price cover'  // select only needed fields
+    })
+  .populate({
+      path: 'bidder',
+      select: 'username cover'
+    })
+    .populate({
+      path: 'postOwner',
+      select: 'username cover'
+    });
 
-  res.json(messages);
+  if (!bid) {
+    res.status(404);
+    throw new Error('Bid not found');
+  }
+
+  // Determine the chat partner (the "other user")
+  let chatPartner = null;
+  if (bid.bidder._id.toString() === req.user.id.toString()) {
+    chatPartner = bid.postOwner;
+  } else {
+    chatPartner = bid.bidder;
+  }
+
+  res.json({messages , bid , chatPartner});
 });

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../utils/api';
 import { useUser } from '../Context/userContext';
+import OfferPost from '../Components/offerPost';
 import { Link } from 'react-router-dom';
 
 const MyPlacedBids = () => {
@@ -42,39 +43,25 @@ const MyPlacedBids = () => {
   return (
     <div className="p-4">
       {/* Bids Placed By Me */}
-      <h2 className="text-2xl font-bold mb-4 text-blue-800">Bids I Placed</h2>
+      <h2 className="text-2xl">Bids I Placed</h2>
       {bidsByMe.length === 0 ? (
         <p className="text-gray-500 mb-6">You haven't placed any bids.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        <div className="h-auto w-[60vw] flex flex-col mb-8 gap-2">
           {bidsByMe.map((bid) => (
-            <Link to={bid._id} key={bid._id} className="rounded-2xl border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 bg-white p-6">
-              <h3 className="text-xl font-bold text-blue-700 mb-2">{bid.postId?.title || 'Post not found'}</h3>
-              <div className="text-gray-700 text-base">
-                <span className="font-medium">Offer:</span> ₹{bid.latestOfferAmount || 'N/A'} <br />
-                <span className="text-sm text-gray-500">{bid.latestMessage}</span>
-              </div>
-              <p className="text-sm text-gray-400 mt-2">Posted by {bid.postOwner?.username || 'Unknown'}</p>
-            </Link>
+          <OfferPost bid={bid} myPost={false}/>
           ))}
         </div>
       )}
 
       {/* Bids Received On My Posts */}
-      <h2 className="text-2xl font-bold mb-4 text-green-800">Bids On My Posts</h2>
+      <h2 className="text-2xl">Bids On My Posts</h2>
       {bidsOnMe.length === 0 ? (
         <p className="text-gray-500">No bids received on your posts.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="h-auto w-[60vw] flex flex-col gap-2">
           {bidsOnMe.map((bid) => (
-            <Link to={bid._id} key={bid._id} className="rounded-2xl border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 bg-white p-6">
-              <h3 className="text-xl font-bold text-green-700 mb-2">{bid.postId?.title || 'Post not found'}</h3>
-              <div className="text-gray-700 text-base">
-                <span className="font-medium">Offer:</span> ₹{bid.latestOfferAmount || 'N/A'} <br />
-                <span className="text-sm text-gray-500">{bid.latestMessage}</span>
-              </div>
-              <p className="text-sm text-gray-400 mt-2">By {bid.bidder?.username || 'Unknown'}</p>
-            </Link>
+            <OfferPost myPost={true} bid={bid}/>
           ))}
         </div>
       )}

@@ -18,10 +18,13 @@ const ListingPage = () => {
         <RoomPost post={val}/>
         ))}
       </div>
-      <div className="map h-[65vh] w-[25vw] sticky top-[30vh] bg-neutral-600 rounded-2xl"></div>
+      <div className="map h-[65vh] w-[25vw] sticky top-[30vh] bg-neutral-600 rounded-2xl border-2 border-neutral-500 overflow-hidden">
+        <div className="absolute bg-black/60 backdrop-blur-2xl px-4 py-2 rounded-2xl text-white bottom-2 right-2"> find your place on map</div>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSF1fhw8tIpzVbLuhI_ZPqWzoL1zNZ6oK4AQg&s" alt="" className='h-full w-full object-cover' />
+      </div>
       </div>
 
-      <footer class="bg-gray-900 text-white py-6 mt-10">
+      <footer class="bg-black text-white py-6 mt-10">
   <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
     <p class="text-sm">&copy; 2025 YourCompany. All rights reserved.</p>
     <div class="flex space-x-4 mt-4 md:mt-0">

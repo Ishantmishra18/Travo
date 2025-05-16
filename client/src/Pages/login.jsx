@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import api from '../utils/api';
-import { Link } from 'react-router-dom';
 import { useUser } from '../Context/userContext';
-import { useContext } from 'react';
+import SideWallpaper from '../Components/logWallpaper';
 
 const Login = () => {
   const [form, setForm] = useState({ username: '', password: '' });
@@ -15,36 +14,59 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await api.post('/auth/login', form);
-      setUser(response.data.user)
+      setUser(response.data.user);
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      setError(err.response?.data?.message || 'Login failed');
     }
   };
 
   return (
-    <div className="h-screen flex justify-center items-center">
-      <form onSubmit={handleSubmit} className="w-80 p-6 bg-white rounded shadow space-y-4">
-        <h2 className="text-xl font-bold">Login</h2>
+    <div className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-white">
+      <SideWallpaper />
+
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col w-[90vw] md:w-[400px] items-center justify-center gap-6 p-8"
+      >
+        <h1 className="text-2xl md:text-4xl font-semibold text-gray-800 mb-2">
+          Login to Travo
+        </h1>
+
         <input
           type="text"
           placeholder="Username"
-          className="w-full border p-2 rounded"
+          className="w-full py-3 px-4 bg-gray-100 text-gray-800 rounded-lg focus:bg-gray-200 focus:outline-none"
           value={form.username}
           onChange={(e) => setForm({ ...form, username: e.target.value })}
         />
+
         <input
           type="password"
           placeholder="Password"
-          className="w-full border p-2 rounded"
+          className="w-full py-3 px-4 bg-gray-100 text-gray-800 rounded-lg focus:outline-none focus:bg-gray-200"
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
         />
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded">
+
+        {error && <p className="text-red-500 text-sm -mt-3">{error}</p>}
+
+        <button
+          type="submit"
+          className="w-full py-3 bg-black text-white rounded-full hover:translate-y-1 cursor-pointer duration-200 transition"
+        >
           Login
         </button>
-        <Link to='/register' >register here</Link>
+
+        <div className="text-sm text-gray-600">
+          <span>Don't have an account? </span>
+          <Link
+            to="/register"
+            className="text-blue-500 hover:underline hover:text-blue-700"
+          >
+            Register here
+          </Link>
+        </div>
       </form>
     </div>
   );
