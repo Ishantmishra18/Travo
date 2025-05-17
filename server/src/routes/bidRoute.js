@@ -3,9 +3,7 @@
 import express from 'express';
 import {
    placeBid, 
-  respondToBid,
   getMyPlacedBids,
-  getBidsOnMyPosts,
   getBidMessages,
 } from '../controllers/bidController.js';
 import { protect } from '../middleware/authMiddleware.js';
@@ -18,13 +16,21 @@ router.post('/post/:postID' , protect, placeBid);
 // Get bids placed by the logged-in user (Inbox A)
 router.get('/placed', protect, getMyPlacedBids);
 
-// Get bids made on the user's posts (Inbox B)
-router.get('/received', protect, getBidsOnMyPosts);
+//get the messages of the bid
+router.get('/:bidId/messages', protect , getBidMessages)
 
-// Get all messages (thread) for a specific bid
-router.get('/:bidId/messages', protect, getBidMessages);
+// Get this accept the bid 
+router.post('/:bidId/accept',protect , )
 
-// Respond to a bid (counter, accept, reject, close)
-router.post('/:bidId/respond', protect, respondToBid);
+//get this reject bid
+router.post('/:bidId/reject',protect , )
+
+//get this counteroffer
+router.post('/:bidId/counterOffer',protect , )
+
+//close the bid
+router.post('/:bidId/close',protect , )
+
+
 
 export default router;

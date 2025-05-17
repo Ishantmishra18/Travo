@@ -1,6 +1,6 @@
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../utils/api';
-import React, { useEffect, useState } from 'react';
 import { useUser } from '../Context/userContext';
 
 const ChatPage = () => {
@@ -10,6 +10,7 @@ const ChatPage = () => {
   const [chatPartner, setChatPartner] = useState(null);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const [amount , setAmount] = useState(0)
   const { user } = useUser();
 
   useEffect(() => {
@@ -28,6 +29,54 @@ const ChatPage = () => {
     fetchChat();
   }, [bidID]);
 
+  const getOptions = () => {
+    if (!bid) return [];
+    const baseOptions = [];
+
+    if (bid.status === 'rejected') {
+      baseOptions.push('Counter Offer');
+    } else if (bid.status === 'counterOffer' || bid.status === 'open') {
+      baseOptions.push('Counter Offer', 'Accept', 'Reject');
+    }
+    
+
+    baseOptions.push('Close Deal');
+    return baseOptions;
+  };
+
+  const options = getOptions();
+
+  const handleAction = async (action) => {
+    try {
+      const lastMessage = chats[chats.length - 1];
+
+      if (action === 'Counter Offer' && lastMessage?.sender === user._id) {
+        alert('You already made the last offer. Wait for a response.');
+        return;
+      }
+
+      if (action === 'Counter Offer') {
+        if (!message.trim()) return alert('Type a message or offer first.');
+        await api.post(`/bid/${bidID}/counter`, { message });
+      } else if (action === 'Accept') {
+        await api.post(`/bid/${bidID}/accept`);
+      } else if (action === 'Reject') {
+        await api.post(`/bid/${bidID}/reject`);
+      } else if (action === 'Close Deal') {
+        await api.post(`/bid/${bidID}/close`);
+      }
+
+      // Refresh data
+      const res = await api.get(`/bid/${bidID}/messages`);
+      setChats(res.data.messages);
+      setBid(res.data.bid);
+      setChatPartner(res.data.chatPartner);
+      setMessage('');
+    } catch (error) {
+      console.error('Error handling action:', error);
+    }
+  };
+
   const handleSend = async () => {
     if (!message.trim()) return;
     try {
@@ -43,8 +92,6 @@ const ChatPage = () => {
     return <div className="text-center p-10">Loading...</div>;
 
   const post = bid.postId;
-
-  const options = ['Accept', 'Rejects' , 'Counter Offer' , 'Close Deal']
 
   return (
     <div className="flex h-screen w-screen bg-white">
@@ -76,7 +123,7 @@ const ChatPage = () => {
 
         {/* Bottom - Offer Summary */}
         <div className="text-sm border-gray-400 border-t-2 pt-4 mt-4 space-y-2">
-          <p className="font-semibold ">Negotiation Summary</p>
+          <p className="font-semibold">Negotiation Summary</p>
           <p>
             Latest Offer: <span className="font-bold text-xl text-black">₹{bid.latestOfferAmount}</span>
           </p>
@@ -105,24 +152,36 @@ const ChatPage = () => {
           ))}
         </div>
 
-        {/* Input */}
-        <div className="sticky bottom-0 bg-white p-4 ">
-          <div className="flex flex-col items-end gap-3">
-            <input
-              type="text"
-              value={message}
-              onChange={e => setMessage(e.target.value)}
-              placeholder="Type your message..."
-              className="w-full px-4 py-4 rounded-xl bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300"
-            />
-             <div className="placebit flex gap-2">
-            {options.map((val , key)=>(
-              <div className={`px-5 py-2 bg-black rounded-2xl text-white cursor-pointer ${val=='Close Deal'&&'bg-red-600'}`} key={key}>{val}</div>
-            ))}
+        {/* Input & Options */}
+        {bid.status !== 'accepted' && (
+          <div className="sticky bottom-0 bg-white p-4">
+            <div className="flex flex-col items-end gap-3">
+              <input
+                type="text"
+                value={message}
+                onChange={e => setMessage(e.target.value)}
+                placeholder="Type your message..."
+                className="w-full px-4 py-4 rounded-xl bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300"
+              />
+
+              <div className="placebit flex gap-2 flex-wrap">
+                
+              <input type="number" value={amount} onChange={e=>setAmount(e.target.value)} className='px-5 py-2 rounded-2xl bg-gray-300' />
+                {options.map((val, key) => (
+                  <button
+                    key={key}
+                    onClick={() => handleAction(val)}
+                    className={`px-5 py-2 rounded-2xl text-white cursor-pointer transition ${
+                      val === "Close Deal" ? "bg-red-600 hover:bg-red-700" : "bg-black hover:bg-gray-900"
+                    }`}
+                  >
+                    {val}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
-          </div>
-         
-        </div>
+        )}
       </div>
     </div>
   );

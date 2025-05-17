@@ -16,6 +16,7 @@ const postSchema = new mongoose.Schema(
         required: true,
       }
     ,
+    images:[{type:String}],
     price: {
       type: Number,
       required: [true, "Price per night is required"],
@@ -37,14 +38,6 @@ const postSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    bids: [
-    {
-      bidder: { type:String , require:true },
-      amount: Number,
-      message: String,
-      timestamp: { type: Date, default: Date.now }
-    }
-  ]
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt
 );

@@ -8,24 +8,34 @@ import User from '../models/userSchema.js';
 // @access  Private
 export const createListing = async (req, res) => {
   try {
-const { title, description, location, price, cover } = req.body;
+    const { title, description, location, price } = req.body;
+    const coverFile = req.files?.cover?.[0];
+    const galleryFiles = req.files?.images || [];
 
-const newPost = new Post({
-  owner: req.user.id,
-  title,
-  description,
-  location,
-  price,
-  cover,
-});
+    const coverUrl = coverFile?.path;
+    const galleryUrls = galleryFiles.map(file => file.path);
 
-    const savedPost = await newPost.save();
-    res.status(201).json(savedPost);
+    const newListing = new Post({
+      owner: req.body.id,
+      title,
+      description,
+      location,
+      price,
+      cover: coverUrl,
+      images: galleryUrls,
+    });
+
+
+
+    await newListing.save();
+    res.status(201).json({ message: 'Listing created successfully', listing: newListing });
   } catch (error) {
-    res.status(500).json({ message: 'Failed to create listing', error });
-    console.log('the error', error)
+    console.error(error);
+    res.status(500).json({ message: 'Failed to create listing' });
   }
+  console.log('hellloo lok here ' , req.user.id)
 };
+
 
 
 

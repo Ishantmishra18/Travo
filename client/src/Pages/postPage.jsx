@@ -87,6 +87,11 @@ const RoomDetails = ({ userBookmarks = [] }) => {
           />
         
       </div>
+      <div className="w-full flex flex-wrap">
+        {post.images.map((val , key)=>(
+          <img src={val} alt="" key={key} className='h-[20vh] w-[15vw] rounded-2xl'/>
+        ))}
+      </div>
 
       {/* Show Bit Card Modal */}
       {showBit && (

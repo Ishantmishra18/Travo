@@ -2,15 +2,18 @@ import React, { useState } from "react";
 import axios from "axios";
 import api from "../utils/api";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../Context/userContext";
 
 export default function EditProfile() {
   const [profileImage, setProfileImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
 
+  const {user} = useUser();
+
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    name: '',
+    name: user?.name,
     email: '',
     phone: '',
     dob: '',
@@ -59,11 +62,11 @@ export default function EditProfile() {
       <div className="w-full max-w-7xl bg-white rounded-3xl shadow-xl grid grid-cols-1 lg:grid-cols-3 overflow-hidden">
         
         {/* Profile Image */}
-        <div className="bg-gradient-to-br from-indigo-300 to-purple-400 flex flex-col items-center justify-center p-10">
+        <div className="bg-neutral-800 flex flex-col items-center justify-center p-10">
           <label className="cursor-pointer">
             <div className="w-40 h-40 rounded-full overflow-hidden shadow-xl border-4 border-white hover:scale-105 transition duration-300">
               <img
-                src={profileImage || "/default-avatar.png"}
+                src={user?.cover}
                 alt="Profile"
                 className="w-full h-full object-cover"
               />

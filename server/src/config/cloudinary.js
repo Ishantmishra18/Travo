@@ -1,9 +1,13 @@
 import { v2 as cloudinary } from 'cloudinary';
+import dotenv from 'dotenv';
+
+// Load env variables from ../.env since we're inside /src
+dotenv.config({ path: '../.env' });
 
 cloudinary.config({
-  cloud_name: 'dcssh49ax',
-  api_key: '533576367868114',
-  api_secret: 'RG0RqE6V_3w78iMW4E0NZ5ukNQI',
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 export default cloudinary;

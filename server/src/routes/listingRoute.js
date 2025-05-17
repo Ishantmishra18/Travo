@@ -12,11 +12,18 @@ import {
   placeBid
 } from '../controllers/listingController.js';
 import { protect } from '../middleware/authMiddleware.js';
+import upload from '../middleware/upload.js';
 
 const router = express.Router();
 
 // Create a new listing
-router.post('/add', protect, createListing);
+router.post('/add', protect,
+  upload.fields([
+    { name: 'cover', maxCount: 1 },
+    { name: 'images', maxCount: 8 },
+  ]),
+  createListing
+);
 
 router.post('/:postID/bid' , protect , placeBid);
 
