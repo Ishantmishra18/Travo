@@ -15,7 +15,7 @@ export default function EditProfile() {
   const [formData, setFormData] = useState({
     name: user?.name,
     email: '',
-    phone: '',
+    phone: user.phone,
     dob: '',
     location: '',
     gender: '',
@@ -49,6 +49,7 @@ export default function EditProfile() {
     try {
       const res = await api.post("/user/edit", data,);
       alert("Profile updated!");
+      navigate('/profile')
 
     } catch (err) {
       console.error("Error updating profile:", err);
@@ -58,7 +59,7 @@ export default function EditProfile() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-white flex items-center justify-center">
+    <div className="min-h-screen w-full bg-gray-50 flex items-center justify-center">
       <div className="w-full max-w-7xl bg-white rounded-3xl shadow-xl grid grid-cols-1 lg:grid-cols-3 overflow-hidden">
         
         {/* Profile Image */}
@@ -66,7 +67,7 @@ export default function EditProfile() {
           <label className="cursor-pointer">
             <div className="w-40 h-40 rounded-full overflow-hidden shadow-xl border-4 border-white hover:scale-105 transition duration-300">
               <img
-                src={user?.cover}
+                src={profileImage || user?.cover}
                 alt="Profile"
                 className="w-full h-full object-cover"
               />

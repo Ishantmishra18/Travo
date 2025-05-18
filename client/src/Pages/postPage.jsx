@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import PlaceBit from '../Components/placeBit';
 import { usePost } from '../Context/postContext';
-import { useParams } from 'react-router-dom';
+import { useParams , Link} from 'react-router-dom';
 import api from '../utils/api';
 import { FaRegBookmark, FaBookmark } from "react-icons/fa6";
+
 
 const RoomDetails = ({ userBookmarks = [] }) => {
   const [showBit, setShowBit] = useState(false);
@@ -36,28 +37,19 @@ const RoomDetails = ({ userBookmarks = [] }) => {
     return <div className="text-center text-xl text-red-500 mt-10">Loading post details or post not found.</div>;
   }
 
-  const room = {
-    title: 'Cozy Studio Apartment',
-    location: 'Mumbai, India',
-    description: 'This modern studio apartment offers a peaceful stay in the heart of Mumbai. Fully furnished, WiFi, and close to the metro.',
-    price: 2200,
-    roomType: 'Entire place',
-    amenities: ['WiFi', 'Air conditioning', 'Kitchen', 'Washer', 'Parking'],
-    images: ['https://cdn.create.vista.com/api/media/medium/214626304/stock-photo-streaming?token='],
-    rating: 4.7,
-    reviews: 143,
-    host: {
-      name: 'Rahul Sharma',
-      avatar: 'https://i.pravatar.cc/150?img=32',
-    },
-  };
-
   return (
-    <div className="max-w-5xl mx-auto p-6 relative">
+    <div className="mx-20 p-6 relative">
 
       {/* Sticky Navbar */}
-      <div className="sticky top-[11vh] z-50 bg-white/90 backdrop-blur-2xl rounded-xl shadow-md mb-6 px-4 py-3 flex justify-end gap-4">
-        {/* Place Bit */}
+      <div className="sticky top-[11vh] z-50 mx-5 bg-white/90 backdrop-blur-2xl rounded-xl shadow-md mb-6 px-4 py-3 flex justify-between items-center">
+      <div className="flex items-center gap-12">
+        <h2 className='text-bold text-3xl font-bold'>{post.title}</h2>
+        <h2 className='text-2xl'>{post.price}/night</h2>
+      </div>
+      
+
+      <div className="flex gap-4">
+            {/* Place Bit */}
         <button
           onClick={() => setShowBit(true)}
           className="px-4 py-2 bg-black text-white rounded-xl hover:bg-gray-900 transition"
@@ -73,25 +65,24 @@ const RoomDetails = ({ userBookmarks = [] }) => {
             <FaRegBookmark className="text-black" />
           )}
         </button>
+
+      </div>
       </div>
 
-      <h1 className="text-3xl font-bold">{post.title}</h1>
-      <p className="text-gray-600">{post.location}</p>
-
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-      
-          <img
-            src={post.cover}
-            alt={`Room image`}
-            className="rounded-lg w-full h-64 object-cover"
-          />
-        
-      </div>
-      <div className="w-full flex flex-wrap">
-        {post.images.map((val , key)=>(
-          <img src={val} alt="" key={key} className='h-[20vh] w-[15vw] rounded-2xl'/>
-        ))}
-      </div>
+<div className="imgcont flex w-full h-[500px] gap-2 relative">
+  <div className={`absolute ${post.images?.length < 3 &&'hidden'} bottom-2 right-2 bg-black/90 px-5 py-2 cursor-pointer rounded-2xl text-white`}>view all {post.images.length+1} photos</div>
+  <div className="w-[60%] h-full">
+    <img src={post.cover} alt="" className="w-full h-full object-cover rounded rounded-l-3xl" />
+  </div>
+  <div className="flex flex-col w-[40%] h-full gap-2">
+    <div className="h-[calc(50%-4px)]">
+      <img src={post.images[0]} alt="" className="w-full h-full object-cover rounded rounded-tr-3xl" />
+    </div>
+    <div className="h-[calc(50%-4px)]">
+      <img src={post.images[1]} alt="" className="w-full h-full object-cover rounded rounded-br-3xl" />
+    </div>
+  </div>
+</div>
 
       {/* Show Bit Card Modal */}
       {showBit && (
@@ -108,31 +99,36 @@ const RoomDetails = ({ userBookmarks = [] }) => {
         </div>
       )}
 
+
       <div className="mt-6">
         <p className="text-lg text-gray-800">{post.description}</p>
-        <p className="mt-2"><strong>Room type:</strong> {room.roomType}</p>
-        <p className="mt-1"><strong>Price:</strong> ₹{post.price} / night</p>
 
-        <div className="mt-3">
-          <strong>Amenities:</strong>
-          <ul className="list-disc list-inside mt-1 text-gray-700">
-            {room.amenities.map((a, i) => (
-              <li key={i}>{a}</li>
-            ))}
-          </ul>
-        </div>
+        
+       <div className="mt-4 flex items-center gap-4 p-4 bg-white shadow-md rounded-lg w-fit">
+  {/* Avatar */}
+  <img
+    src={post.owner.cover}
+    alt={post.owner.username}
+    className="w-14 h-14 rounded-full object-cover border-2 "
+  />
 
-        <div className="mt-4 flex items-center gap-3">
-          <img
-            src={room.host.avatar}
-            alt={room.host.name}
-            className="w-12 h-12 rounded-full"
-          />
-          <div>
-            <p className="font-medium">Hosted by {post.owner.username}</p>
-            <p className="text-sm text-gray-500">⭐ {room.rating} ({room.reviews} reviews)</p>
-          </div>
-        </div>
+  {/* Info */}
+  <div className="flex flex-col">
+    <span className="text-lg font-semibold text-gray-800">
+      {post.owner.username}
+    </span>
+    <span className="text-sm text-gray-500">Post Owner</span>
+  </div>
+
+  {/* Button */}
+  <Link
+    href={`/profile/${post.owner._id}`}
+    className="ml-auto px-4 py-2 text-sm bg-black text-white rounded-lg transition"
+  >
+    View Profile
+  </Link>
+</div>
+
       </div>
     </div>
   );

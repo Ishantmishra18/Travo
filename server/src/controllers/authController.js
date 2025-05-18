@@ -2,7 +2,6 @@ import User from '../models/userSchema.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-const jwtsec = 'slkfjdslkfjslkdfjs'
 
 export const register = async (req, res) => {
   const { username, password } = req.body;
@@ -30,7 +29,7 @@ export const login = async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(400).json({ message: 'Password incorrect' });
 
-    const token = jwt.sign({ id: user._id }, jwtsec, { expiresIn: '1d' });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
 
     res.cookie('token', token, { httpOnly: true, sameSite: 'Strict' /* secure: true in production */ });

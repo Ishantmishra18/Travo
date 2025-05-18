@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import api from '../utils/api';
+import { useNavigate } from 'react-router-dom';
 
 const PlaceBit = ({ post, show }) => {
   const [message, setMessage] = useState('');
   const [payment, setPayment] = useState(post.price);
+  const [bidId, setBidId] = useState('');
+  const [bidStatus, setBidStatus] = useState(''); // 'exists' or 'placed'
+  const navigate = useNavigate();
 
   const priceBlocks = [100, 200, 300].map(offset => ({
     above: post.price + offset,
@@ -12,14 +16,46 @@ const PlaceBit = ({ post, show }) => {
 
   const handleBit = async () => {
     try {
-      await api.post(`/bid/post/${post._id}`, {
+      const response = await api.post(`/bid/post/${post._id}`, {
         offerAmount: payment,
         message,
       });
+
+      if (response.status === 200 && response.data?.bidId) {
+        setBidId(response.data.bidId);
+        setBidStatus('exists');
+      } else if (response.status === 201 && response.data?.bidId) {
+        setBidId(response.data.bidId);
+        setBidStatus('placed');
+      }
     } catch (error) {
       console.error(error);
     }
   };
+
+  if (bidStatus) {
+    return (
+      <div className="w-[40vw] mx-auto p-10 rounded-3xl shadow-xl bg-white space-y-6 border border-gray-100 text-center">
+        <h2 className="text-2xl font-semibold text-gray-900">
+          {bidStatus === 'exists' ? 'You’ve already placed a bid on same post before' : 'Your bid has been placed'}
+        </h2>
+        <p className="text-gray-600">
+          {bidStatus === 'exists'
+            ? 'You can continue the conversation in chat.'
+            : 'You can follow up with the owner in the chatroom.'}
+        </p>
+        <button
+          onClick={() => {
+            show(false); // hide modal if any
+            navigate(`/chat/${bidId}`);
+          }}
+          className="mt-4 bg-black text-white cursor-pointer px-6 py-3 rounded-full font-semibold transition"
+        >
+          Go to Chat
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="w-[60vw] mx-auto p-10 rounded-3xl shadow-xl bg-white space-y-8 border border-gray-100">
@@ -40,9 +76,7 @@ const PlaceBit = ({ post, show }) => {
       {/* Payment Slider */}
       <div className="space-y-4">
         <div className="flex justify-between items-center">
-          <label className="text-sm text-gray-500">
-            Your Offer
-          </label>
+          <label className="text-sm text-gray-500">Your Offer</label>
           <span className="text-lg font-semibold text-gray-800">₹{payment}</span>
         </div>
         <input
@@ -80,10 +114,7 @@ const PlaceBit = ({ post, show }) => {
       {/* Submit Button */}
       <div className="pt-6 flex justify-end">
         <button
-          onClick={() => {
-            handleBit();
-            show(false);
-          }}
+          onClick={handleBit}
           className="bg-black text-white px-8 py-3 rounded-full hover:bg-gray-800 text-sm font-semibold transition"
         >
           Submit Bid

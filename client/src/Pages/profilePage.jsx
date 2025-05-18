@@ -36,7 +36,7 @@ const ProfilePage = () => {
   return (
     <div className="h-screen flex items-center justify-between px-4">
       {/* Left Panel */}
-      <div className="left h-full w-[45vw] bg-gray-100 flex flex-col items-center p-10 gap-5 relative">
+      <div className="left h-full w-[35vw] bg-gray-100 flex flex-col items-center p-10 gap-5 relative">
         {/* Navigation */}
         <div className="pronav w-full flex justify-between items-center">
           <Link to='/' className='px-7 py-3 rounded-full bg-gray-200 hover:bg-gray-300 transition'>
@@ -81,7 +81,7 @@ const ProfilePage = () => {
         <img
           src={user?.cover}
           alt=""
-          className="w-[40%] aspect-square rounded-full object-cover"
+          className="w-[60%] aspect-square rounded-full object-cover"
         />
         <h2 className="text-2xl">{user.username}</h2>
       </div>

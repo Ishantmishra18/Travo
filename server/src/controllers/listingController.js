@@ -15,8 +15,8 @@ export const createListing = async (req, res) => {
     const coverUrl = coverFile?.path;
     const galleryUrls = galleryFiles.map(file => file.path);
 
-    const newListing = new Post({
-      owner: req.body.id,
+    const newListing = await Post.create({
+      owner: req.user.id,
       title,
       description,
       location,
@@ -25,15 +25,11 @@ export const createListing = async (req, res) => {
       images: galleryUrls,
     });
 
-
-
-    await newListing.save();
     res.status(201).json({ message: 'Listing created successfully', listing: newListing });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Failed to create listing' });
   }
-  console.log('hellloo lok here ' , req.user.id)
 };
 
 

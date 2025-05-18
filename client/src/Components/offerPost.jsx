@@ -53,8 +53,8 @@ const OfferPost = ({ bid, myPost }) => {
           </h2>
           {/* Bidder Cover Photo */}
           <img
-            src={myPost ? bid.bidder.cover : bid.postOwner.cover}
-            alt="Bidder"
+            src={myPost ? bid?.bidder.cover : bid?.postOwner.cover}
+            alt={myPost?"Bidder":"postOwner"}
             className="w-10 h-10 rounded-full object-cover border-2 border-white shadow"
           />
         </div>

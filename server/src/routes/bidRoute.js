@@ -5,6 +5,7 @@ import {
    placeBid, 
   getMyPlacedBids,
   getBidMessages,
+  sendMessage
 } from '../controllers/bidController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
@@ -18,6 +19,9 @@ router.get('/placed', protect, getMyPlacedBids);
 
 //get the messages of the bid
 router.get('/:bidId/messages', protect , getBidMessages)
+
+//send message
+router.post('/:bidId/send' , protect , sendMessage)
 
 // Get this accept the bid 
 router.post('/:bidId/accept',protect , )

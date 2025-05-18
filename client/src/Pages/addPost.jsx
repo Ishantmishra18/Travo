@@ -87,11 +87,11 @@ const AddPost = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 to-purple-200 px-6">
-      <div className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl flex overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-6">
+      <div className="w-[90vw] h-[90vh] bg-white rounded-3xl shadow-2xl flex overflow-hidden">
 
         {/* Form Section */}
-        <form onSubmit={handleSubmit} className="w-[80vw] p-10 flex flex-col justify-center">
+        <form onSubmit={handleSubmit} className="w-[80vw] p-10 flex flex-col justify-start">
           <h2 className="text-3xl font-bold text-gray-800 mb-6">Add New Listing</h2>
 
           {successMsg && <p className="text-green-600">{successMsg}</p>}
@@ -133,7 +133,7 @@ const AddPost = () => {
         </form>
 
         {/* Right Preview Panel */}
-        <div className="w-1/3 bg-neutral-800 flex flex-col items-center justify-start p-4">
+        <div className="w-[35%] bg-neutral-800 flex flex-col items-center justify-start p-4">
           {/* Cover Image Upload */}
           <div
             className="w-full h-48 aspect-video rounded-2xl overflow-hidden border-4 border-white mb-4 relative cursor-pointer group"
@@ -166,7 +166,7 @@ const AddPost = () => {
             />
           </div>
 
-          <h2 className='mb-4 text-white'>Add More Images</h2>
+          <h2 className='mb-4 text-white'>Add More Images (at least 2)</h2>
           {/* Gallery Images Grid */}
           <div className="grid grid-cols-3 gap-2">
             {galleryPreviews.map((src, i) => (

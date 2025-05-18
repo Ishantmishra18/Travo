@@ -18,6 +18,18 @@ export const placeBid = asyncHandler(async (req, res) => {
     throw new Error("You can't bid on your own post");
   }
 
+   const existingBid = await Bid.findOne({
+    postId: post._id,
+    bidder: req.user.id,
+  });
+
+  if (existingBid) {
+    return res.status(200).json({
+      message: 'You have already placed a bid on this post',
+      bidId: existingBid._id,
+    });
+  }
+  
   // Create new bid
   const bid = await Bid.create({
     postId: post._id,
@@ -119,16 +131,17 @@ export const getMyPlacedBids = asyncHandler(async (req, res) => {
 });
 
 
+//sendMessage
+export const sendMessage = asyncHandler(async (req , res)=>{
+  const {message}=req.body;
 
-// @desc Get bids on my posts (Inbox B)
-// @route GET /api/bid/received
-export const getBidsOnMyPosts = asyncHandler(async (req, res) => {
-  const bids = await Bid.find({ postOwner: req.user._id })
-    .populate('postId')
-    .populate('bidder', 'name');
-
-  res.json(bids);
-});
+  const newMessage = await BidMessage.create({
+    bidId: req.params.bidId,
+    sender: req.user.id,
+    message,
+  });
+  res.status(201).json({ message: 'Message sent successfully', data: newMessage });
+})
 
 
 

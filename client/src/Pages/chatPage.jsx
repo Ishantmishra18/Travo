@@ -10,7 +10,6 @@ const ChatPage = () => {
   const [chatPartner, setChatPartner] = useState(null);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
-  const [amount , setAmount] = useState(0)
   const { user } = useUser();
 
   useEffect(() => {
@@ -29,64 +28,27 @@ const ChatPage = () => {
     fetchChat();
   }, [bidID]);
 
-  const getOptions = () => {
-    if (!bid) return [];
-    const baseOptions = [];
 
-    if (bid.status === 'rejected') {
-      baseOptions.push('Counter Offer');
-    } else if (bid.status === 'counterOffer' || bid.status === 'open') {
-      baseOptions.push('Counter Offer', 'Accept', 'Reject');
-    }
-    
 
-    baseOptions.push('Close Deal');
-    return baseOptions;
-  };
-
-  const options = getOptions();
-
-  const handleAction = async (action) => {
-    try {
-      const lastMessage = chats[chats.length - 1];
-
-      if (action === 'Counter Offer' && lastMessage?.sender === user._id) {
-        alert('You already made the last offer. Wait for a response.');
-        return;
-      }
-
-      if (action === 'Counter Offer') {
-        if (!message.trim()) return alert('Type a message or offer first.');
-        await api.post(`/bid/${bidID}/counter`, { message });
-      } else if (action === 'Accept') {
-        await api.post(`/bid/${bidID}/accept`);
-      } else if (action === 'Reject') {
-        await api.post(`/bid/${bidID}/reject`);
-      } else if (action === 'Close Deal') {
-        await api.post(`/bid/${bidID}/close`);
-      }
-
-      // Refresh data
-      const res = await api.get(`/bid/${bidID}/messages`);
-      setChats(res.data.messages);
-      setBid(res.data.bid);
-      setChatPartner(res.data.chatPartner);
-      setMessage('');
-    } catch (error) {
-      console.error('Error handling action:', error);
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault(); // prevent newline in textarea
+      handleSend();
     }
   };
+
 
   const handleSend = async () => {
     if (!message.trim()) return;
     try {
-      const res = await api.post(`/bid/${bidID}/message`, { message });
+      const res = await api.post(`/bid/${bidID}/send`, { message });
       setChats(prev => [...prev, res.data]);
       setMessage('');
     } catch (error) {
       console.error('Send error:', error);
     }
   };
+
 
   if (loading || !user || !bid || !chatPartner)
     return <div className="text-center p-10">Loading...</div>;
@@ -106,7 +68,7 @@ const ChatPage = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <img src={chatPartner.cover || '/default-avatar.png'} alt="user" className="w-12 h-12 rounded-full" />
+            <img src={chatPartner.cover || '/default-avatar.png'} alt="user" className="w-12 h-12 rounded-full object-cover" />
             <div>
               <p className="font-semibold text-lg">{chatPartner.username}</p>
               <p className="text-xs text-gray-500">Chat Partner</p>
@@ -143,8 +105,8 @@ const ChatPage = () => {
               <div className={`max-w-[60%] px-4 flex flex-col items-start gap-3 py-2 rounded-2xl shadow-sm ${
                 user._id !== val.sender ? 'bg-gray-200' : 'bg-neutral-500 text-white'
               }`}>
-                <p className="font-medium">{val.message}</p>
-                {val.offerAmount && (
+                <p className="">{val.message}</p>
+                {val.offerAmount!=0 && (
                   <p className="text-sm mt-1 px-4 py-1 bg-black rounded-full text-white">Offer: ₹{val.offerAmount}</p>
                 )}
               </div>
@@ -154,30 +116,18 @@ const ChatPage = () => {
 
         {/* Input & Options */}
         {bid.status !== 'accepted' && (
-          <div className="sticky bottom-0 bg-white p-4">
+          <div className="sticky bottom-0  p-4">
             <div className="flex flex-col items-end gap-3">
-              <input
+              <div className="enterMsg w-full rounded-xl relative">
+                  <div className="send px-6 py-2 bg-black text-white absolute right-2 cursor-pointer top-1/2 -translate-y-1/2 rounded-2xl" onClick={handleSend}>Send</div>
+                    <input
                 type="text"
                 value={message}
                 onChange={e => setMessage(e.target.value)}
+                onKeyDown={handleKeyDown}
                 placeholder="Type your message..."
-                className="w-full px-4 py-4 rounded-xl bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                className="w-full px-4 h-full py-4 bg-gray-200 focus:outline-none rounded-2xl focus:ring-gray-300"
               />
-
-              <div className="placebit flex gap-2 flex-wrap">
-                
-              <input type="number" value={amount} onChange={e=>setAmount(e.target.value)} className='px-5 py-2 rounded-2xl bg-gray-300' />
-                {options.map((val, key) => (
-                  <button
-                    key={key}
-                    onClick={() => handleAction(val)}
-                    className={`px-5 py-2 rounded-2xl text-white cursor-pointer transition ${
-                      val === "Close Deal" ? "bg-red-600 hover:bg-red-700" : "bg-black hover:bg-gray-900"
-                    }`}
-                  >
-                    {val}
-                  </button>
-                ))}
               </div>
             </div>
           </div>

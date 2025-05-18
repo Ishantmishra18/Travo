@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import api from '../utils/api';
 import { Link } from 'react-router-dom';
+import { FcGoogle } from "react-icons/fc"; // Optional: Google icon
 
 const Register = () => {
   const [form, setForm] = useState({ username: '', password: '' });
@@ -16,6 +17,10 @@ const Register = () => {
     }
   };
 
+  const handleGoogleSignup = () => {
+    window.location.href = 'http://localhost:5000/auth/google'; //not used a tag becuase of external url from the web
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white">
       <form
@@ -25,6 +30,18 @@ const Register = () => {
         <h1 className="text-2xl md:text-4xl font-semibold text-gray-800 mb-2">
           Create an Account
         </h1>
+
+        {/* 🔹 OAuth Signup */}
+        <button
+          type="button"
+          onClick={handleGoogleSignup}
+          className="flex items-center justify-center gap-2 w-full py-3 border border-gray-300 rounded-full hover:bg-gray-100 transition"
+        >
+          <FcGoogle size={22} />
+          <span>Sign up with Google</span>
+        </button>
+
+        <div className="text-gray-400 text-sm">— OR —</div>
 
         <input
           type="text"
