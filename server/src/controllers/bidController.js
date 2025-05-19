@@ -140,6 +140,14 @@ export const sendMessage = asyncHandler(async (req , res)=>{
     sender: req.user.id,
     message,
   });
+
+    req.io.to(req.params.bidId).emit('receiveMessage', {
+    _id: newMessage._id,
+    message: newMessage.message,
+    sender: newMessage.sender,
+    createdAt: newMessage.createdAt,
+  });
+  
   res.status(201).json({ message: 'Message sent successfully', data: newMessage });
 })
 

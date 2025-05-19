@@ -12,13 +12,13 @@ const MyPlacedBids = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!user || !user._id) return; // ✅ Safely wait for user to load
+    if (!user || !user._id) return; // Safely wait for user to load
 
     const fetchBids = async () => {
       try {
         const { data } = await api.get('/bid/placed'); // API should return all related bids
 
-        // ✅ Separate into two sections based on user ID
+        // Separate into two sections based on user ID
         const byMe = data.filter(bid => bid.bidder?._id === user._id);
         const onMe = data.filter(bid => bid.postOwner?._id === user._id);
 
@@ -33,8 +33,6 @@ const MyPlacedBids = () => {
 
     fetchBids();
   }, [user]);
-
-  console.log(bidsByMe, bidsOnMe)
 
   if (!user || !user._id) return <p className="text-center">Loading user...</p>;
   if (loading) return <p className="text-center text-gray-500">Loading bids...</p>;

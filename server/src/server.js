@@ -23,15 +23,20 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-// Routes
+// Setup HTTP server for Socket.io
+const server = http.createServer(app);
+const io = initSocket(server); // Initialize Socket.io and get instance
+
+// Attach io to only /api/bid routes
+app.use('/api/bid', (req, res, next) => {
+  req.io = io;
+  next();
+}, bidRoute);
+
+// Other routes (without io)
 app.use('/api/auth', authRoutes);
 app.use('/api/listing', listingRoutes);
 app.use('/api/user', userRoute);
-app.use('/api/bid', bidRoute);
-
-// Setup HTTP server for Socket.io
-const server = http.createServer(app);
-initSocket(server); // 👈 initialize Socket.io
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {

@@ -2,8 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../utils/api';
 import { useUser } from '../Context/userContext';
+import socket from '../utils/socket';
+
+const SOCKET_SERVER_URL = 'http://localhost:3000';
 
 const ChatPage = () => {
+
   const { bidID } = useParams();
   const [chats, setChats] = useState([]);
   const [bid, setBid] = useState(null);
@@ -28,8 +32,23 @@ const ChatPage = () => {
     fetchChat();
   }, [bidID]);
 
+  //Socket connection
+  useEffect(() => {
+  if (!bidID) return;
+
+  socket.emit('joinRoom', bidID);
+
+  socket.on('receiveMessage', (msg) => {
+    setChats(prev => [...prev, msg]);
+  });
+
+  return () => {
+    socket.off('receiveMessage');
+  };
+}, [bidID]);
 
 
+//send message by pressing enter 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault(); // prevent newline in textarea
@@ -37,12 +56,11 @@ const ChatPage = () => {
     }
   };
 
-
+//sending message to backend
   const handleSend = async () => {
     if (!message.trim()) return;
     try {
       const res = await api.post(`/bid/${bidID}/send`, { message });
-      setChats(prev => [...prev, res.data]);
       setMessage('');
     } catch (error) {
       console.error('Send error:', error);
@@ -100,18 +118,30 @@ const ChatPage = () => {
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3">
-          {chats.map((val, index) => (
-            <div key={index} className={`w-full flex ${user._id !== val.sender ? 'justify-start' : 'justify-end'}`}>
-              <div className={`max-w-[60%] px-4 flex flex-col items-start gap-3 py-2 rounded-2xl shadow-sm ${
-                user._id !== val.sender ? 'bg-gray-200' : 'bg-neutral-500 text-white'
-              }`}>
-                <p className="">{val.message}</p>
-                {val.offerAmount!=0 && (
-                  <p className="text-sm mt-1 px-4 py-1 bg-black rounded-full text-white">Offer: ₹{val.offerAmount}</p>
-                )}
-              </div>
-            </div>
-          ))}
+      {chats.map((val, index) => (
+  <div
+    key={index}
+    className={`w-full flex ${user._id !== val.sender ? 'justify-start' : 'justify-end'}`}
+  >
+    <div
+      className={`max-w-[60%] px-4 flex flex-col items-start gap-3 py-2 rounded-2xl shadow-sm ${
+        user._id !== val.sender ? 'bg-gray-200' : 'bg-neutral-500 text-white'
+      }`}
+    >
+      <p>{val.message}</p>
+
+      {/* Time display */}
+      <p
+        className={`text-xs ${
+          user._id !== val.sender ? 'text-left text-gray-500' : 'text-right text-gray-300'
+        }`}
+      >
+        {new Date(val.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+      </p>
+    </div>
+  </div>
+))}
+
         </div>
 
         {/* Input & Options */}
