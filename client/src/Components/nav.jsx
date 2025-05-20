@@ -15,7 +15,7 @@ const NavBar = () => {
       </Link>
 
       {/* Navigation Options */}
-      <div className="space-x-4 flex items-center">
+      <div className="space-x-4 flex items-center text-sm ">
         {!user ? (
           <>
             <Link

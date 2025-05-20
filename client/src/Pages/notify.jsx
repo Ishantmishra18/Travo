@@ -3,6 +3,7 @@ import api from '../utils/api';
 import { useUser } from '../Context/userContext';
 import OfferPost from '../Components/offerPost';
 import { Link } from 'react-router-dom';
+import Loader from '../Components/loader';
 
 const MyPlacedBids = () => {
   const { user } = useUser();
@@ -34,18 +35,17 @@ const MyPlacedBids = () => {
     fetchBids();
   }, [user]);
 
-  if (!user || !user._id) return <p className="text-center">Loading user...</p>;
-  if (loading) return <p className="text-center text-gray-500">Loading bids...</p>;
+  if (!user || !user._id  || loading) return <p className="text-center"><Loader></Loader></p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
-    <div className="p-4">
+    <div className="">
       {/* Bids Placed By Me */}
-      <h2 className="text-2xl">Bids I Placed</h2>
+      <h2 className="text-2xl m-2">Bids I Placed</h2>
       {bidsByMe.length === 0 ? (
-        <p className="text-gray-500 mb-6">You haven't placed any bids.</p>
+        <p className="text-gray-500 mx-2 mb-6">You haven't placed any bids.</p>
       ) : (
-        <div className="h-auto w-[60vw] flex flex-col mb-8 gap-2">
+        <div className="h-auto w-screen items-center md:w-[60vw] flex flex-col mb-8 gap-2">
           {bidsByMe.map((bid) => (
           <OfferPost bid={bid} myPost={false}/>
           ))}
@@ -53,11 +53,11 @@ const MyPlacedBids = () => {
       )}
 
       {/* Bids Received On My Posts */}
-      <h2 className="text-2xl">Bids On My Posts</h2>
+      <h2 className="text-2xl m-2">Bids On My Posts</h2>
       {bidsOnMe.length === 0 ? (
-        <p className="text-gray-500">No bids received on your posts.</p>
+        <p className="text-gray-500 mx-2">No bids received on your posts.</p>
       ) : (
-        <div className="h-auto w-[60vw] flex flex-col gap-2">
+        <div className="h-auto w-screen md:w-[60vw] flex flex-col gap-2">
           {bidsOnMe.map((bid) => (
             <OfferPost myPost={true} bid={bid}/>
           ))}

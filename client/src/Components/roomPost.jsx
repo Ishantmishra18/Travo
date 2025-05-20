@@ -54,29 +54,29 @@ const RoomPost = ({ post }) => {
   };
 
   return (
-    <div className="w-[80vw] max-w-5xl h-[30vh] bg-white rounded-2xl overflow-hidden shadow-md flex relative">
+    <div className="w-[90vw] max-w-5xl bg-white rounded-2xl overflow-hidden shadow-md flex flex-col md:flex-row relative h-auto md:h-[30vh]">
 
       {/* Bookmark Icon */}
       {user && (
         <div
-          className="absolute h-6 top-6 right-6 aspect-square text-center cursor-pointer z-10"
+          className="absolute top-4 right-4 text-xl cursor-pointer z-10"
           onClick={handleBookmark}
         >
           {bookmarked ? (
-            <FaBookmark className="h-full w-full text-black" />
+            <FaBookmark className="text-black" />
           ) : (
-            <FaRegBookmark className="h-full w-full text-black" />
+            <FaRegBookmark className="text-black" />
           )}
         </div>
       )}
 
-      {/* Image Slider Section */}
-      <div className="imgcont relative w-[26vw] h-full overflow-hidden">
-        {/* Arrows only if available */}
+      {/* Image Slider */}
+            <div className="relative w-full md:w-[35%] h-60 md:h-full overflow-hidden">
+        {/* Arrows */}
         {currentIndex > 0 && (
           <button
             onClick={prevSlide}
-            className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full cursor-pointer bg-black bg-opacity-30 text-white flex items-center justify-center hover:bg-opacity-80 transition z-10"
+            className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black bg-opacity-30 text-white hover:bg-opacity-80 flex items-center justify-center z-10"
           >
             <FiChevronLeft size={20} />
           </button>
@@ -84,18 +84,18 @@ const RoomPost = ({ post }) => {
         {currentIndex < images.length - 1 && (
           <button
             onClick={nextSlide}
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full cursor-pointer bg-black bg-opacity-30 text-white flex items-center justify-center hover:bg-opacity-80 transition z-10"
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black bg-opacity-30 text-white hover:bg-opacity-80 flex items-center justify-center z-10"
           >
             <FiChevronRight size={20} />
           </button>
         )}
 
-        {/* Slides */}
+        {/* Slides container */}
         <div
           className="flex h-full transition-transform duration-500 ease-in-out"
           style={{
-            transform: `translateX(-${currentIndex * 26}vw)`,
-            width: `${images.length * 26}vw`,
+            width: `${images.length * 100}%`,
+            transform: `translateX(-${currentIndex * (100 / images.length)}%)`,
           }}
         >
           {images.map((img, idx) => (
@@ -103,29 +103,35 @@ const RoomPost = ({ post }) => {
               key={idx}
               src={img}
               alt={`slide-${idx}`}
-              className="w-[26vw] h-full object-cover flex-shrink-0"
+              className="w-full h-full object-cover flex-shrink-0"
+              style={{ width: `${100 / images.length}%` }}
             />
           ))}
         </div>
       </div>
 
+
       {/* Post Content */}
-      <div className="w-[60%] p-6 flex flex-col justify-between">
+      <div className="w-full md:w-[65%] p-4 flex flex-col justify-between gap-2">
         <div>
-          <h2 className="text-2xl font-semibold mb-2 text-gray-800">{post.title}</h2>
-          <p className="text-gray-800">{post.location}</p>
-          <p className="text-gray-400">{post.description}</p>
-          <div className="user mt-2 flex gap-2 ">
-            <h1 className="text-gray-400">by {post.owner?.username || "User"}</h1>
-          <img src={post.owner?.cover} alt="" className='h-7 w-7 border-2 border-gray-400 rounded-full object-cover' />
+          <h2 className="text-xl md:text-2xl font-semibold text-gray-800">{post.title}</h2>
+          <p className="text-sm text-gray-700">{post.location}</p>
+          <p className="text-sm text-gray-500 mt-1 line-clamp-2">{post.description}</p>
+          <div className="flex items-center gap-2 mt-2">
+            <h1 className="text-gray-400 text-sm">by {post.owner?.username || "User"}</h1>
+            <img
+              src={post.owner?.cover}
+              alt=""
+              className="h-7 w-7 border-2 border-gray-400 rounded-full object-cover"
+            />
           </div>
-          
         </div>
-        <div className="flex justify-between items-end">
-          <p className="text-lg text-black">₹{post.price} / night</p>
+
+        <div className="flex justify-between items-center mt-3">
+          <p className="text-lg font-medium text-black">₹{post.price} / night</p>
           <Link
             to={`/listing/${post._id}`}
-            className="bg-black text-white px-5 py-2 rounded-xl hover:bg-gray-900 transition"
+            className="bg-black text-white px-4 py-2 text-sm md:text-base rounded-xl hover:bg-gray-900 transition"
           >
             View
           </Link>

@@ -2,12 +2,13 @@ import React from 'react';
 import { useUser } from '../Context/userContext';
 import { usePost } from '../Context/postContext';
 import RoomPost from '../Components/roomPost';
+import Loader from '../Components/loader';
 
 const Bookmark = () => {
   const { user } = useUser();
   const { posts } = usePost();
 
-if (!user || !user.bookmarks || !Array.isArray(user.bookmarks)) return <div>Loading...</div>;
+if (!user || !user.bookmarks || !Array.isArray(user.bookmarks)) return <div><Loader></Loader></div>;
 
 const bookmarkedPosts = posts.filter(post =>
   user.bookmarks.some(bookmarkId => bookmarkId.toString() === post._id.toString())

@@ -60,7 +60,7 @@ export default function EditProfile() {
 
   return (
     <div className="min-h-screen w-full bg-gray-50 flex items-center justify-center">
-      <div className="w-full max-w-7xl bg-white rounded-3xl shadow-xl grid grid-cols-1 lg:grid-cols-3 overflow-hidden">
+      <div className="w-full max-w-7xl bg-white md:rounded-3xl shadow-xl grid grid-cols-1 lg:grid-cols-3 overflow-hidden">
         
         {/* Profile Image */}
         <div className="bg-neutral-800 flex flex-col items-center justify-center p-10">

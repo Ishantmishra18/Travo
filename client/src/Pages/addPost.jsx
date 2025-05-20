@@ -87,121 +87,131 @@ const AddPost = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-6">
-      <div className="w-[90vw] h-[90vh] bg-white rounded-3xl shadow-2xl flex overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-6 sm:px-6">
+  <div className="w-full max-w-6xl h-full bg-white rounded-3xl shadow-2xl flex flex-col lg:flex-row overflow-auto">
+    
+    {/* Form Section */}
+    <form 
+      onSubmit={handleSubmit} 
+      className="w-full lg:w-[65%] p-6 sm:p-10 flex flex-col justify-start"
+    >
+      <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">Add New Listing</h2>
 
-        {/* Form Section */}
-        <form onSubmit={handleSubmit} className="w-[80vw] p-10 flex flex-col justify-start">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6">Add New Listing</h2>
+      {successMsg && <p className="text-green-600">{successMsg}</p>}
+      {errorMsg && <p className="text-red-600">{errorMsg}</p>}
 
-          {successMsg && <p className="text-green-600">{successMsg}</p>}
-          {errorMsg && <p className="text-red-600">{errorMsg}</p>}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="col-span-1 sm:col-span-2">
+          <label className="text-sm font-medium text-gray-700">Title</label>
+          <input type="text" name="title" value={formData.title} onChange={handleChange}
+            className="w-full mt-1 p-3 bg-gray-100 rounded-xl" />
+        </div>
 
-          <div className="grid grid-cols-2 gap-6">
-            <div className="col-span-2">
-              <label className="text-sm font-medium text-gray-700">Title</label>
-              <input type="text" name="title" value={formData.title} onChange={handleChange}
-                className="w-full mt-1 p-3 bg-gray-100 rounded-xl" />
+        <div className="col-span-1 sm:col-span-2">
+          <label className="text-sm font-medium text-gray-700">Description</label>
+          <textarea name="description" value={formData.description} onChange={handleChange}
+            className="w-full mt-1 p-3 bg-gray-100 rounded-xl resize-none h-24" />
+        </div>
+
+        <div>
+          <label className="text-sm font-medium text-gray-700">Location</label>
+          <input type="text" name="location" value={formData.location} onChange={handleChange}
+            className="w-full mt-1 p-3 bg-gray-100 rounded-xl" />
+        </div>
+
+        <div>
+          <label className="text-sm font-medium text-gray-700">Price (₹)</label>
+          <input type="number" name="price" value={formData.price} onChange={handleChange}
+            className="w-full mt-1 p-3 bg-gray-100 rounded-xl" />
+        </div>
+
+        <div className="col-span-1 sm:col-span-2 flex justify-end">
+          <button type="submit"
+            className={`bg-black text-white px-6 py-3 rounded-xl hover:translate-y-1 cursor-pointer transition ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={loading}>
+            {loading ? 'Creating...' : 'Create Listing'}
+          </button>
+        </div>
+      </div>
+    </form>
+
+    {/* Right Preview Panel */}
+    <div className="w-full lg:w-[35%] bg-neutral-800 flex flex-col items-center justify-start p-6 gap-4">
+      
+      {/* Cover Image Upload */}
+      <div
+        className="w-full aspect-video rounded-2xl overflow-hidden border-2 relative cursor-pointer group"
+        onClick={() => !coverFile && coverInputRef.current.click()}
+      >
+        {coverPreview ? (
+          <>
+            <img src={coverPreview} alt="Cover" className="w-full h-full object-cover" />
+            <button
+              className="absolute top-2 right-2 text-white bg-red-600/70 rounded-sm px-2 py-1 text-xs hover:bg-red-700/80"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRemoveCover();
+              }}
+            >
+              ✕
+            </button>
+          </>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white bg-white/35">
+            <div className="flex flex-col items-center">
+              <CiCirclePlus className="text-5xl" />
+            <h2>Cover Image</h2>
             </div>
-
-            <div className="col-span-2">
-              <label className="text-sm font-medium text-gray-700">Description</label>
-              <textarea name="description" value={formData.description} onChange={handleChange}
-                className="w-full mt-1 p-3 bg-gray-100 rounded-xl resize-none h-24" />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-gray-700">Location</label>
-              <input type="text" name="location" value={formData.location} onChange={handleChange}
-                className="w-full mt-1 p-3 bg-gray-100 rounded-xl" />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-gray-700">Price (₹)</label>
-              <input type="number" name="price" value={formData.price} onChange={handleChange}
-                className="w-full mt-1 p-3 bg-gray-100 rounded-xl" />
-            </div>
-
-            <div className="col-span-2 flex justify-end">
-              <button type="submit"
-                className={`bg-black text-white px-6 py-3 rounded-xl hover:translate-y-1 cursor-pointer transition ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                disabled={loading}>
-                {loading ? 'Creating...' : 'Create Listing'}
-              </button>
-            </div>
+            
           </div>
-        </form>
+        )}
+        <input
+          type="file"
+          accept="image/*"
+          ref={coverInputRef}
+          onChange={handleCoverUpload}
+          className="hidden"
+        />
+      </div>
 
-        {/* Right Preview Panel */}
-        <div className="w-[35%] bg-neutral-800 flex flex-col items-center justify-start p-4">
-          {/* Cover Image Upload */}
-          <div
-            className="w-full h-48 aspect-video rounded-2xl overflow-hidden border-4 border-white mb-4 relative cursor-pointer group"
-            onClick={() => !coverFile && coverInputRef.current.click()}
-          >
-            {coverPreview ? (
-              <>
-                <img src={coverPreview} alt="Cover" className="w-full h-full object-cover" />
-                <button
-                  className="absolute top-2 right-2 text-white bg-red-600/70 rounded-sm px-2 py-1 text-xs hover:bg-red-700/80"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleRemoveCover();
-                  }}
-                >
-                  ✕
-                </button>
-              </>
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-white bg-gray-700">
-                <CiCirclePlus className="text-5xl" />
-              </div>
-            )}
+      <h2 className="text-white text-sm sm:text-base">Add More Images (at least 2)</h2>
+
+      {/* Gallery Images Grid */}
+      <div className="grid grid-cols-3 gap-2">
+        {galleryPreviews.map((src, i) => (
+          <div key={i} className="relative h-20 w-24 sm:w-28 rounded-md overflow-hidden shadow border">
+            <img src={src} alt={`img-${i}`} className="w-full h-full object-cover" />
+            <button
+              onClick={() => handleRemoveGalleryImage(i)}
+              className="absolute top-1 right-1 bg-red-600/70 text-white text-xs px-1 rounded-sm cursor-pointer hover:bg-red-700/80"
+            >
+              ✕
+            </button>
+          </div>
+        ))}
+        {galleryFiles.length < 8 && (
+          <>
+            <div
+              className="h-20 w-24 sm:w-28 rounded-md overflow-hidden shadow border bg-white/35 cursor-pointer grid place-content-center"
+              onClick={() => galleryInputRef.current.click()}
+            >
+              <CiCirclePlus className='text-3xl text-white' />
+            </div>
             <input
               type="file"
               accept="image/*"
-              ref={coverInputRef}
-              onChange={handleCoverUpload}
+              multiple
+              ref={galleryInputRef}
+              onChange={handleGalleryUpload}
               className="hidden"
             />
-          </div>
-
-          <h2 className='mb-4 text-white'>Add More Images (at least 2)</h2>
-          {/* Gallery Images Grid */}
-          <div className="grid grid-cols-3 gap-2">
-            {galleryPreviews.map((src, i) => (
-              <div key={i} className="relative h-20 w-28 rounded-md overflow-hidden shadow border">
-                <img src={src} alt={`img-${i}`} className="w-full h-full object-cover" />
-                <button
-                  onClick={() => handleRemoveGalleryImage(i)}
-                  className="absolute top-1 right-1 bg-red-600/70 text-white text-xs px-1 rounded-sm cursor-pointer hover:bg-red-700/80"
-                >
-                  ✕
-                </button>
-              </div>
-            ))}
-            {galleryFiles.length < 8 && (
-              <>
-                <div
-                  className="h-20 w-28 rounded-md overflow-hidden shadow border bg-white/35 cursor-pointer grid place-content-center"
-                  onClick={() => galleryInputRef.current.click()}
-                >
-                  <CiCirclePlus className='text-3xl text-white' />
-                </div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  ref={galleryInputRef}
-                  onChange={handleGalleryUpload}
-                  className="hidden"
-                />
-              </>
-            )}
-          </div>
-        </div>
+          </>
+        )}
       </div>
     </div>
+  </div>
+</div>
+
   );
 };
 
