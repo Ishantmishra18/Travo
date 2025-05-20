@@ -28,6 +28,9 @@ const PlaceBit = ({ post, show }) => {
         setBidId(response.data.bidId);
         setBidStatus('placed');
       }
+      else if(response.status === 401){
+        console.log(response.data.message)
+      }
     } catch (error) {
       console.error(error);
     }
