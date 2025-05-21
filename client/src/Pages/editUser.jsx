@@ -8,7 +8,7 @@ export default function EditProfile() {
   const [profileImage, setProfileImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
 
-  const {user} = useUser();
+  const {user , setUser} = useUser();
 
   const navigate = useNavigate();
 
@@ -49,6 +49,7 @@ export default function EditProfile() {
     try {
       const res = await api.post("/user/edit", data,);
       alert("Profile updated!");
+      setUser(prev => ({ ...prev, cover: profileImage }));
       navigate('/profile')
 
     } catch (err) {

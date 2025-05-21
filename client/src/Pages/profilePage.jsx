@@ -64,6 +64,7 @@ return (
               <Link to="bookmark" className="block px-4 py-2 hover:bg-gray-100 text-gray-700">
                 View Bookmarks
               </Link>
+              <Link to='yourpost' className='block px-4 py-2 hover:bg-gray-100 text-gray-700'>view your posts</Link>
               <button
                 onClick={logout}
                 className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
@@ -87,7 +88,7 @@ return (
     {/* Right Panel */}
     <div className="w-full md:flex-1 flex items-center justify-center p-6 md:p-10">
       <Link
-        to="list"
+        to="addpost"
         className="bg-black px-6 py-3 text-sm md:text-base rounded-full text-white hover:bg-gray-900 transition"
       >
         Create your own post

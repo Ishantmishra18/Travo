@@ -35,7 +35,7 @@ const MyPlacedBids = () => {
     fetchBids();
   }, [user]);
 
-  if (!user || !user._id  || loading) return <p className="text-center"><Loader></Loader></p>;
+  if (!user || !user._id  || loading) return <><Loader></Loader></>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (

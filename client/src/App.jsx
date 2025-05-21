@@ -15,6 +15,8 @@ import ListingPage from './Pages/listingPage';
 import Bookmark from './Pages/bookmark';
 import Notify from './Pages/notify';
 import EditProfile from './Pages/editUser';
+import YourPost from './Pages/yourPost';
+import EditPost from './Pages/editPost';
 
 const router = createBrowserRouter([
   {
@@ -51,8 +53,11 @@ const router = createBrowserRouter([
     path:'/profile',
     element:<ProfilePage/>
   },{
-    path:'/profile/list',
+    path:'/profile/addpost',
     element:<AddPost/>
+  },{
+    path:'/profile/editpost/:postId',
+    element:<EditPost/>
   },{
     path:'/profile/bookmark',
     element:<Bookmark/>
@@ -62,6 +67,9 @@ const router = createBrowserRouter([
   },{
     path:'/chat/:bidID',
     element:<ChatPage/>
+  },{
+    path:'/profile/yourpost',
+    element:<YourPost/>
   }
 ]);
 

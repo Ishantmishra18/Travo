@@ -15,7 +15,7 @@ const ListingPage = () => {
 
         <div className="flex flex-col md:w-[70vw] items-center w-screen gap-5 p-10">
         {posts?.map((val, key) => (
-        <RoomPost post={val}/>
+        <RoomPost post={val} key={key}/>
         ))}
       </div>
       <div className="map h-[65vh] md:block hidden w-[25vw] sticky top-[30vh] bg-neutral-600 rounded-2xl border-2 border-neutral-500 overflow-hidden">
@@ -24,13 +24,10 @@ const ListingPage = () => {
       </div>
       </div>
 
-      <footer class="bg-black text-white py-6 mt-10">
-  <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
-    <p class="text-sm">&copy; 2025 YourCompany. All rights reserved.</p>
-    <div class="flex space-x-4 mt-4 md:mt-0">
-      <a href="#" class="hover:underline">Privacy Policy</a>
-      <a href="#" class="hover:underline">Terms of Service</a>
-      <a href="#" class="hover:underline">Contact</a>
+      <footer className="bg-black text-white py-6 mt-10">
+  <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+    <p className="text-sm">&copy; 2025 YourCompany. All rights reserved.</p>
+    <div className="flex space-x-4 mt-4 md:mt-0">
     </div>
   </div>
 </footer>

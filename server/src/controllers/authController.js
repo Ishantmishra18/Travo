@@ -32,7 +32,12 @@ export const login = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
 
-    res.cookie('token', token, { httpOnly: true, sameSite: 'Strict' /* secure: true in production */ });
+  res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,           // Required for HTTPS
+      sameSite: 'None',       // Required for cross-site cookies
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
 
     const { password: _, ...userData } = user.toObject(); // remove password
 

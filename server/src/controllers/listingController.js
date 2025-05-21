@@ -12,8 +12,8 @@ export const createListing = async (req, res) => {
     const coverFile = req.files?.cover?.[0];
     const galleryFiles = req.files?.images || [];
 
-    const coverUrl = coverFile?.path;
-    const galleryUrls = galleryFiles.map(file => file.path);
+    const cover = coverFile?.path;
+    const images = galleryFiles.map(file => file.path);
 
     const newListing = await Post.create({
       owner: req.user.id,
@@ -21,8 +21,8 @@ export const createListing = async (req, res) => {
       description,
       location,
       price,
-      cover: coverUrl,
-      images: galleryUrls,
+      cover,
+      images,
     });
 
     res.status(201).json({ message: 'Listing created successfully', listing: newListing });
@@ -43,10 +43,24 @@ export const updateListing = async (req, res) => {
     const post = await Post.findById(req.params.id);
 
     if (!post) return res.status(404).json({ message: 'Listing not found' });
-    if (post.user.toString() !== req.user._id.toString())
+    if (post.owner.toString() !== req.user.id.toString())
       return res.status(403).json({ message: 'Unauthorized' });
+    const {title , price , description , location}=req.body
+    const coverFile = req.files?.cover?.[0];
+    const galleryFiles = req.files?.images || [];
 
-    const updatedPost = await Post.findByIdAndUpdate(req.params.id, req.body, {
+    const cover = coverFile?.path;
+    const images = galleryFiles.map(file => file.path);
+
+    const updatedPost = await Post.findByIdAndUpdate(req.params.id, {
+      title,
+      cover, 
+      description,
+      location , 
+      price , 
+      images
+    
+    },{
       new: true,
     });
 
@@ -64,13 +78,14 @@ export const deleteListing = async (req, res) => {
     const post = await Post.findById(req.params.id);
 
     if (!post) return res.status(404).json({ message: 'Listing not found' });
-    if (post.user.toString() !== req.user._id.toString())
+    if (post.owner.toString() !== req.user.id.toString())
       return res.status(403).json({ message: 'Unauthorized' });
 
-    await post.remove();
+    await post.deleteOne();
     res.status(200).json({ message: 'Listing deleted' });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete listing', error });
+    console.log(error)
   }
 };
 
@@ -105,51 +120,9 @@ export const getListingById = async (req, res) => {
 // @access  Private
 export const getUserListings = async (req, res) => {
   try {
-    const listings = await Post.find({ user: req.params.userId }).sort({ createdAt: -1 });
+    const listings = await Post.find({ owner: req.params.userId }).sort({ createdAt: -1 });
     res.status(200).json(listings);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch user listings', error });
-  }
-};
-
-// @desc    Upload image for a listing (optional placeholder)
-// @route   POST /api/listings/:id/upload
-// @access  Private
-export const uploadListingImage = async (req, res) => {
-  // You'd integrate multer/cloudinary/etc. here
-  res.status(200).json({ message: 'Upload endpoint hit - implement later' });
-};
-
-
-export const placeBid = async (req, res) => {
-  try {
-    const { message, payment } = req.body;
-    const { postID } = req.params;
-
-    
-    const post = await Post.findById(postID);
-    if (!post) {
-      return res.status(404).json({ error: "Post not found" });
-    }
-
-    const bidder = await User.findById(req.user.id);
-    if (!bidder) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    // Push the bid into the bid array
-    post.bids.push({
-      message,
-      amount: payment,
-      bidder: bidder.username,
-    });
-
-    // Save the updated post
-    await post.save();
-
-    return res.status(200).json({ message: "Bid placed successfully", post });
-  } catch (error) {
-    console.error("Error placing bid:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
